@@ -33,41 +33,71 @@ class ModelTrainer:
                 test_array[:,:-1],
                 test_array[:,-1]
                 )
-            # Specify hyperparameters, this is what we did but the performance is same w.r.t without specifying any hyperparameter. 
-            linear_regression_params = {}
-            k_neighbors_params = {'n_neighbors': 7}
-            decision_tree_params = {'max_depth': 10, 'min_samples_split': 3}
-            gradient_boosting_params = {'n_estimators': 200, 'learning_rate': 0.1}
-            random_forest_params = {'n_estimators': 200, 'max_depth': None}
-            xgb_regressor_params = {'n_estimators': 200, 'learning_rate': 0.1}
-            catboost_regressor_params = {'iterations': 200, 'learning_rate': 0.2, 'verbose': False}
-            adaboost_regressor_params = {'n_estimators': 100, 'learning_rate': 0.1}
-
-# Create model instances with specified hyperparameters
+            
             models = {
-                        "Linear Regression": LinearRegression(**linear_regression_params),
-                        "K-Neighbors Regressor": KNeighborsRegressor(**k_neighbors_params),
-                        "Decision Tree": DecisionTreeRegressor(**decision_tree_params),
-                        "Gradient Boosting": GradientBoostingRegressor(**gradient_boosting_params),
-                        "Random Forest Regressor": RandomForestRegressor(**random_forest_params),
-                        "XGBRegressor": XGBRegressor(**xgb_regressor_params),
-                        "CatBoosting Regressor": CatBoostRegressor(**catboost_regressor_params),
-                        "AdaBoost Regressor": AdaBoostRegressor(**adaboost_regressor_params)
-                     }
-            #models = {
-                 #"Linear Regression": LinearRegression(),
-                 #"K-Neighbors Regressor": KNeighborsRegressor(),
-                 #"Decision Tree": DecisionTreeRegressor(),
-                 #"Gradient Boosting": GradientBoostingRegressor(),
-                 #"Random Forest Regressor": RandomForestRegressor(),
-                 #"XGBRegressor": XGBRegressor(), 
-                 #"CatBoosting Regressor": CatBoostRegressor(verbose=False),
-                 #"AdaBoost Regressor": AdaBoostRegressor()
-                   # }
-            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train, X_test=X_test, y_test=y_test,models=models)
+                 "Linear Regression": LinearRegression(),
+                 "K-Neighbors Regressor": KNeighborsRegressor(),
+                 "Decision Tree": DecisionTreeRegressor(),
+                 "Gradient Boosting": GradientBoostingRegressor(),
+                 "Random Forest Regressor": RandomForestRegressor(),
+                 "XGBRegressor": XGBRegressor(), 
+                 "CatBoosting Regressor": CatBoostRegressor(verbose=False),
+                 "AdaBoost Regressor": AdaBoostRegressor()
+                   }
+            
+            params={
+                "Linear Regression":{},
+                "K-Neighbors Regressor":{
+                                        "n_neighbors": [3, 5, 7],  # Test different values for the number of neighbors.
+                                        "leaf_size": [10, 20, 30],  # Test different leaf sizes.
+                                        "metric": ["euclidean", "manhattan"]  # Test different distance metrics.
+                                        },
+                "Decision Tree": {
+                    'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                    # 'splitter':['best','random'],
+                    # 'max_features':['sqrt','log2'],
+                },
+                
+                "Gradient Boosting":{
+                    # 'loss':['squared_error', 'huber', 'absolute_error', 'quantile'],
+                    'learning_rate':[.1,.01,.05,.001],
+                    'subsample':[0.6,0.7,0.75,0.8,0.85,0.9],
+                    # 'criterion':['squared_error', 'friedman_mse'],
+                    # 'max_features':['auto','sqrt','log2'],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+
+                "Random Forest Regressor":{
+                    # 'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                 
+                    # 'max_features':['sqrt','log2',None],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                
+                "XGBRegressor":{
+                    'learning_rate':[.1,.01,.05,.001],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "CatBoosting Regressor":{
+                    'depth': [6,8,10],
+                    'learning_rate': [0.01, 0.05, 0.1],
+                    'iterations': [30, 50, 100]
+                },
+                "AdaBoost Regressor":{
+                    'learning_rate':[.1,.01,0.5,.001],
+                    # 'loss':['linear','square','exponential'],
+                    'n_estimators': [8,16,32,64,128,256]
+                }
+                
+            }
+
+            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
+                                             models=models,param=params)
+            
+            #model_report:dict=evaluate_model(X_train=X_train,y_train=y_train, X_test=X_test, y_test=y_test,models=models)
             
             #to get the best model score from dict
-            best_model_score=max(sorted(model_report.values()))
+            best_model_score=max(sorted(list(model_report.values())))
 
             # Get the best model name
             best_model_name=list(model_report.keys())[
@@ -75,6 +105,7 @@ class ModelTrainer:
                 ]
             best_model=models[best_model_name]
             print("best model is:",best_model_name)
+
             if best_model_score<0.6:
                 raise CustomException("No best model found")
             logging.info(f"best model found on both the training and testing datasets")
