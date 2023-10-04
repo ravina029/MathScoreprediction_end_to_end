@@ -33,7 +33,7 @@ class ModelTrainer:
                 test_array[:,:-1],
                 test_array[:,-1]
                 )
-            # Specify hyperparameters
+            # Specify hyperparameters, this is what we did but the performance is same w.r.t without specifying any hyperparameter. 
             linear_regression_params = {}
             k_neighbors_params = {'n_neighbors': 7}
             decision_tree_params = {'max_depth': 10, 'min_samples_split': 3}
@@ -74,6 +74,7 @@ class ModelTrainer:
                 list(model_report.values()).index(best_model_score)
                 ]
             best_model=models[best_model_name]
+            print("best model is:",best_model_name)
             if best_model_score<0.6:
                 raise CustomException("No best model found")
             logging.info(f"best model found on both the training and testing datasets")
