@@ -33,16 +33,37 @@ class ModelTrainer:
                 test_array[:,:-1],
                 test_array[:,-1]
                 )
+            # Specify hyperparameters
+            linear_regression_params = {}
+            k_neighbors_params = {'n_neighbors': 7}
+            decision_tree_params = {'max_depth': 10, 'min_samples_split': 3}
+            gradient_boosting_params = {'n_estimators': 200, 'learning_rate': 0.1}
+            random_forest_params = {'n_estimators': 200, 'max_depth': None}
+            xgb_regressor_params = {'n_estimators': 200, 'learning_rate': 0.1}
+            catboost_regressor_params = {'iterations': 200, 'learning_rate': 0.2, 'verbose': False}
+            adaboost_regressor_params = {'n_estimators': 100, 'learning_rate': 0.1}
+
+# Create model instances with specified hyperparameters
             models = {
-                 "Linear Regression": LinearRegression(),
-                 "K-Neighbors Regressor": KNeighborsRegressor(),
-                 "Decision Tree": DecisionTreeRegressor(),
-                 "Gradient Boosting": GradientBoostingRegressor(),
-                 "Random Forest Regressor": RandomForestRegressor(),
-                 "XGBRegressor": XGBRegressor(), 
-                 "CatBoosting Regressor": CatBoostRegressor(verbose=False),
-                 "AdaBoost Regressor": AdaBoostRegressor()
-                    }
+                        "Linear Regression": LinearRegression(**linear_regression_params),
+                        "K-Neighbors Regressor": KNeighborsRegressor(**k_neighbors_params),
+                        "Decision Tree": DecisionTreeRegressor(**decision_tree_params),
+                        "Gradient Boosting": GradientBoostingRegressor(**gradient_boosting_params),
+                        "Random Forest Regressor": RandomForestRegressor(**random_forest_params),
+                        "XGBRegressor": XGBRegressor(**xgb_regressor_params),
+                        "CatBoosting Regressor": CatBoostRegressor(**catboost_regressor_params),
+                        "AdaBoost Regressor": AdaBoostRegressor(**adaboost_regressor_params)
+                     }
+            #models = {
+                 #"Linear Regression": LinearRegression(),
+                 #"K-Neighbors Regressor": KNeighborsRegressor(),
+                 #"Decision Tree": DecisionTreeRegressor(),
+                 #"Gradient Boosting": GradientBoostingRegressor(),
+                 #"Random Forest Regressor": RandomForestRegressor(),
+                 #"XGBRegressor": XGBRegressor(), 
+                 #"CatBoosting Regressor": CatBoostRegressor(verbose=False),
+                 #"AdaBoost Regressor": AdaBoostRegressor()
+                   # }
             model_report:dict=evaluate_model(X_train=X_train,y_train=y_train, X_test=X_test, y_test=y_test,models=models)
             
             #to get the best model score from dict
