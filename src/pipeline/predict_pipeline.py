@@ -5,6 +5,7 @@ from src.utils import load_object
 
 
 
+
 class PredictPipeline:
     def __init__(self):
         pass
@@ -18,6 +19,7 @@ class PredictPipeline:
             data_scaled=preprocessor.transform(features)
             preds=model.predict(data_scaled)
             return  preds
+        
         except  Exception as e:
             raise CustomException(e,sys)
 
@@ -26,7 +28,7 @@ class PredictPipeline:
 class CustomData:
     def __init__(self,
                  gender:str,
-                 race_ethnicity:int,
+                 race_ethnicity:str,
                  parental_level_of_education,
                  lunch:str,
                  test_preparation_course:str,

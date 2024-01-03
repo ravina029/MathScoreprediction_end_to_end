@@ -4,7 +4,7 @@ from typing import List
 HYPEN_E_DOT="-e ."  
 #whenever we add a package, this will automatically trigger setup.py file building the package. 
 """whenever we run requirements.txt -e . will come in setup.py file but this should not come.
-to resolve this issue we will add a code in setup.py which we skip this."""
+to resolve this issue we will add a code in setup.py which will skip this."""
 
 def get_requirements(file_path:str)->List[str]:
     """
