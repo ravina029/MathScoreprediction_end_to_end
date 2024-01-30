@@ -44,7 +44,8 @@ def predict_datapoint():
     
 
 if __name__=="__main__":
-    app.run(host="0.0.0.0")  # remember to remove the debug=True from here when you are deploying your code       
+    #app.run(host="0.0.0.0",debug=True)  # remember to remove the debug=True from here when you are deploying your code   
+    app.run(host="0.0.0.0")    
 
 
     
